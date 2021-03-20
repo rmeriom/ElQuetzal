@@ -6,7 +6,9 @@ import java.util.List;
 import mx.org.quetzal.modelo.CatUsuario;
 
 public interface IUsuarioService extends IGenericService<CatUsuario> {
+
+	List<CatUsuario> findByNombre(String etiqueta) throws SQLException, Exception;
 	
-	public List<CatUsuario> findByNombre(String etiqueta) throws SQLException, Exception;
+
 
 }

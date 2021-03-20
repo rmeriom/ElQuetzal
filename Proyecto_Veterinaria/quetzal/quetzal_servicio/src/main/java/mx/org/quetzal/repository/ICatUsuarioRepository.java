@@ -1,5 +1,6 @@
 package mx.org.quetzal.repository;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.data.domain.Sort;
@@ -13,4 +14,5 @@ public interface ICatUsuarioRepository extends CrudRepository<CatUsuario, Long> 
 	
 	public List<CatUsuario> findAll(Sort by);
 
+	public List<CatUsuario> findByNombre(String etiqueta) throws SQLException, Exception;
 }

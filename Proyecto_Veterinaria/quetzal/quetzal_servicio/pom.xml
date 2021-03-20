@@ -86,7 +86,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>quejas-servicio</finalName>
+		<finalName>quetzal-servicio</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
