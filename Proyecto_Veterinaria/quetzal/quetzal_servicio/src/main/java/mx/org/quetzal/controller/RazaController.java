@@ -17,35 +17,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import mx.org.quetzal.modelo.CatRaza;
 import mx.org.quetzal.modelo.CatUsuario;
-import mx.org.quetzal.modelo.Mascota;
-import mx.org.quetzal.modelo.Visitas;
-import mx.org.quetzal.repository.IVisitaRepository;
-import mx.org.quetzal.service.IMascotaService;
+import mx.org.quetzal.service.IColorService;
+import mx.org.quetzal.service.IRazaService;
+import mx.org.quetzal.service.ISexoService;
+import mx.org.quetzal.service.ISintomasService;
+import mx.org.quetzal.service.ITamanioService;
 import mx.org.quetzal.service.IUsuarioService;
 
 @RestController
-@RequestMapping(path = "/veterinaria")
-public class VeterinariaController {
+@RequestMapping(path = "/Catalogos")
+public class RazaController {
 
 	@Autowired
-	private IUsuarioService service;
-	
-	@Autowired
-	private IVisitaRepository visitaService;
-	
-	@Autowired
-	private IMascotaService mascotaService;
+	private IRazaService razaService;
 
 	private HttpHeaders headers;
 
-	@GetMapping(path = "/visitas/findAll", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/raza/findAll", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> findAll() {
 
 		headers = new HttpHeaders();
 
 		try {
-			List<CatUsuario> list = service.findAll();
+			List<CatRaza> list = razaService.findAll();
 
 			if (list.isEmpty()) {
 
@@ -70,13 +66,13 @@ public class VeterinariaController {
 		}
 	}
 
-	@GetMapping(path = "/findById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/raza/findById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> findById(@PathVariable Long id) {
 
 		headers = new HttpHeaders();
 
 		try {
-			CatUsuario pregunta = service.findById(id);
+			CatRaza pregunta = razaService.findById(id);
 
 			if (pregunta == null) {
 
@@ -102,128 +98,22 @@ public class VeterinariaController {
 		}
 	}
 
-	
-	/*Crea las visitas*/
-	@PostMapping(path = "/visitas/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> save(@RequestBody Visitas entity) {
+	@PostMapping(path = "/raza/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> save(@RequestBody CatRaza entity) {
 
 		headers = new HttpHeaders();
 
 		try {
-			Visitas visita = visitaService.save(entity);
-			if (visita == null) {
-
-				headers.add("Message-Error", "No se almacenó el registro");
-
-				return new ResponseEntity<>(null, headers, HttpStatus.NOT_FOUND);
-			} else {
-				return new ResponseEntity<>(visita, HttpStatus.OK);
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-
-			headers.add("Message-Error", e.getMessage());
-
-			return new ResponseEntity<>(null, headers, HttpStatus.BAD_REQUEST);
-		}
-	}
-
-	/*Crea las Mascotas*/
-	
-	@PostMapping(path = "/mascota/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> save(@RequestBody Mascota entity) {
-
-		headers = new HttpHeaders();
-
-		try {
-			Mascota macota = mascotaService.save(entity);
-			if (macota == null) {
-
-				headers.add("Message-Error", "No se almacenó el registro");
-
-				return new ResponseEntity<>(null, headers, HttpStatus.NOT_FOUND);
-			} else {
-				return new ResponseEntity<>(macota, HttpStatus.OK);
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-
-			headers.add("Message-Error", e.getMessage());
-
-			return new ResponseEntity<>(null, headers, HttpStatus.BAD_REQUEST);
-		}
-	}
-	
-	
-	
-	/*listar todas las mascotas junto con sus visitas a la veterinaria*/
-	
-	
-	@PostMapping(path = "/mascota/findAll", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> allMascota() {
-
-		headers = new HttpHeaders();
-
-		try {
-			List<Visitas> listvisitas = (List<Visitas>) visitaService.findAll();
-			List<Mascota> listMacota =  mascotaService.findAll();
-			
-			
-
-			if (listvisitas.isEmpty()) {
-
-				headers.add("Message-Error", "No existen registros para mostrar");
-
-				return new ResponseEntity<>(null, headers, HttpStatus.NOT_FOUND);
-			} else {
-				return new ResponseEntity<>(listvisitas, HttpStatus.OK);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-
-			headers.add("Message-Error", e.getMessage());
-
-			return new ResponseEntity<>(null, headers, HttpStatus.BAD_REQUEST);
-		}
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	@PutMapping(path = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> update(@RequestBody CatUsuario entity) {
-
-		headers = new HttpHeaders();
-
-		try {
-			CatUsuario pregunta = service.update(entity);
+			CatRaza pregunta = razaService.save(entity);
 			if (pregunta == null) {
 
-				headers.add("Message-Error", "No se actualizó el registro");
+				headers.add("Message-Error", "No se almacenó el registro");
 
 				return new ResponseEntity<>(null, headers, HttpStatus.NOT_FOUND);
 			} else {
-
 				return new ResponseEntity<>(pregunta, HttpStatus.OK);
 			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 
@@ -239,14 +129,14 @@ public class VeterinariaController {
 		}
 	}
 
-	@DeleteMapping(path = "/deleteById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(path = "/raza/deleteById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> deleteById(@PathVariable Long id) {
 
 		headers = new HttpHeaders();
 
 		try {
 
-			service.deteleById(id);
+			razaService.deteleById(id);
 
 			return new ResponseEntity<>(null, HttpStatus.OK);
 		} catch (SQLException e) {
@@ -263,5 +153,7 @@ public class VeterinariaController {
 			return new ResponseEntity<>(null, headers, HttpStatus.BAD_REQUEST);
 		}
 	}
-
+	
+	
+	
 }

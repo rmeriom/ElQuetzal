@@ -42,7 +42,6 @@ public class Visitas {
 	@Temporal(TemporalType.DATE)
 	private Date fecha;
 	
-	
 	@ManyToOne
 	@JoinColumn(name = "id_usuario")
 	private CatUsuario catUsuario;
