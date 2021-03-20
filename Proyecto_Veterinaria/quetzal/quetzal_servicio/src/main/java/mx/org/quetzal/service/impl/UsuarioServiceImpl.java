@@ -53,5 +53,11 @@ public class UsuarioServiceImpl implements IUsuarioService {
 		return findAll(borrado);
 	}
 
+	@Override
+	public List<CatUsuario> findByNombre(String etiqueta) throws SQLException, Exception {
+		
+		return findByNombre(etiqueta);
+	}
+
 
 }

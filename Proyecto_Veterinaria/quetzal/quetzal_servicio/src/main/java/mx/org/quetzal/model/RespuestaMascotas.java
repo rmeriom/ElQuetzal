@@ -16,9 +16,6 @@ public class RespuestaMascotas {
 	private List<Mascota> listMAscota;
 	private List<Visitas> listVisita; 
 	
-	RespuestaMascotas(List<Mascota> listMAscota,List<Visitas> listVisita ){
-		this.listMAscota = listMAscota;
-		
-	}
+
 	
 }

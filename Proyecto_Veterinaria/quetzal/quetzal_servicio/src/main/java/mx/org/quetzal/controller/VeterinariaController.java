@@ -1,7 +1,9 @@
 package mx.org.quetzal.controller;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -36,6 +38,9 @@ public class VeterinariaController {
 	
 	@Autowired
 	private IMascotaService mascotaService;
+	
+	@Autowired
+	private IUsuarioService usuarioService;
 
 	private HttpHeaders headers;
 
@@ -169,8 +174,6 @@ public class VeterinariaController {
 		try {
 			List<Visitas> listvisitas = (List<Visitas>) visitaService.findAll();
 			List<Mascota> listMacota =  mascotaService.findAll();
-			
-			
 
 			if (listvisitas.isEmpty()) {
 
@@ -191,38 +194,33 @@ public class VeterinariaController {
 	
 	
 	
+	/*búsqueda de mascotas usando el nombre del propietario*/
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	@PutMapping(path = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> update(@RequestBody CatUsuario entity) {
+	@GetMapping(path = "/findByNombreProp/{etiqueta}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> findByEtiqueta(@PathVariable String etiqueta) {
 
 		headers = new HttpHeaders();
 
 		try {
-			CatUsuario pregunta = service.update(entity);
-			if (pregunta == null) {
 
-				headers.add("Message-Error", "No se actualizó el registro");
+			List<CatUsuario> usuario = usuarioService.findByNombre(etiqueta);
+			List<Mascota> listMacota =  mascotaService.findAll();
+			
+			List<Mascota> listrs = new ArrayList<>();
+			
+			listrs = listMacota.stream()
+                    .filter(e -> usuario.contains(e)) 
+                    .collect(Collectors.toList());
 
-				return new ResponseEntity<>(null, headers, HttpStatus.NOT_FOUND);
+			if (usuario == null) {
+
+				headers.add("Message-Error", "No existen ningun registro con esas características");
+
+				return new ResponseEntity<>(null, headers, HttpStatus.NO_CONTENT);
 			} else {
 
-				return new ResponseEntity<>(pregunta, HttpStatus.OK);
+				return new ResponseEntity<>(listMacota, HttpStatus.OK);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -239,29 +237,19 @@ public class VeterinariaController {
 		}
 	}
 
-	@DeleteMapping(path = "/deleteById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> deleteById(@PathVariable Long id) {
-
-		headers = new HttpHeaders();
-
-		try {
-
-			service.deteleById(id);
-
-			return new ResponseEntity<>(null, HttpStatus.OK);
-		} catch (SQLException e) {
-			e.printStackTrace();
-
-			headers.add("Message-Error", e.getMessage());
-
-			return new ResponseEntity<>(null, headers, HttpStatus.BAD_REQUEST);
-		} catch (Exception e) {
-			e.printStackTrace();
-
-			headers.add("Message-Error", e.getMessage());
-
-			return new ResponseEntity<>(null, headers, HttpStatus.BAD_REQUEST);
-		}
-	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }
